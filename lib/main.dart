@@ -52,30 +52,38 @@ class _ExamplePageState extends State<Example> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  FloatingActionButton(
-                    onPressed: controller.undo,
-                    child: const Icon(Icons.rotate_left),
-                  ),
-                  FloatingActionButton(
-                    onPressed: controller.swipe,
-                    child: const Icon(Icons.rotate_right),
-                  ),
+                  // FloatingActionButton(
+                  //   onPressed: controller.undo,
+                  //   child: const Icon(Icons.rotate_left),
+                  // ),
+                  // FloatingActionButton(
+                  //   onPressed: controller.swipe,
+                  //   child: const Icon(Icons.rotate_right),
+                  // ),
                   FloatingActionButton(
                     onPressed: controller.swipeLeft,
-                    child: const Icon(Icons.keyboard_arrow_left),
+                    backgroundColor: Colors.red,
+                    elevation: 0,
+                    child: const Icon(Icons.close),
                   ),
                   FloatingActionButton(
                     onPressed: controller.swipeRight,
-                    child: const Icon(Icons.keyboard_arrow_right),
+                    backgroundColor: Colors.green,
+                    elevation: 0,
+                    child: const Icon(Icons.done),
                   ),
                   FloatingActionButton(
-                    onPressed: controller.swipeTop,
-                    child: const Icon(Icons.keyboard_arrow_up),
+                    onPressed: controller.undo,
+                    child: const Icon(Icons.undo),
                   ),
-                  FloatingActionButton(
-                    onPressed: controller.swipeBottom,
-                    child: const Icon(Icons.keyboard_arrow_down),
-                  ),
+                  // FloatingActionButton(
+                  //   onPressed: controller.swipeTop,
+                  //   child: const Icon(Icons.keyboard_arrow_up),
+                  // ),
+                  // FloatingActionButton(
+                  //   onPressed: controller.swipeBottom,
+                  //   child: const Icon(Icons.keyboard_arrow_down),
+                  // ),
                 ],
               ),
             ),
