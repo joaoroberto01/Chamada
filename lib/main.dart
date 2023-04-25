@@ -1,117 +1,70 @@
+import 'package:chamada/tela_aulas.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'lista_aulas.dart';
+import 'tela_aulas.dart';
 
-import 'example_card.dart';
-import 'example_candidate_model.dart';
+void main() => runApp(const MyApp());
 
-void main() {
-  runApp(
-    const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Example(),
-    ),
-  );
-}
-
-class Example extends StatefulWidget {
-  const Example({
-    Key? key,
-  }) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<Example> createState() => _ExamplePageState();
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Minha App Flutter',
+      home: MyHomePage(),
+    );
+  }
 }
 
-class _ExamplePageState extends State<Example> {
-  final CardSwiperController controller = CardSwiperController();
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
-  final cards = candidates.map((candidate) => ExampleCard(candidate)).toList();
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+
+  static List<Widget> _widgetOptions = <Widget>[
+    const Text('Tela Home'),
+    Example(),
+    TelaAulas(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Flexible(
-              child: CardSwiper(
-                controller: controller,
-                cardsCount: cards.length,
-                numberOfCardsDisplayed: cards.length,
-                isLoop: false,
-                onSwipe: _onSwipe,
-                onUndo: _onUndo,
-                onEnd:  (){ print("ACABO"); },
-                padding: const EdgeInsets.all(24.0),
-                cardBuilder: (context, index) => cards[index],
-                isVerticalSwipingEnabled: false,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // FloatingActionButton(
-                  //   onPressed: controller.undo,
-                  //   child: const Icon(Icons.rotate_left),
-                  // ),
-                  // FloatingActionButton(
-                  //   onPressed: controller.swipe,
-                  //   child: const Icon(Icons.rotate_right),
-                  // ),
-                  FloatingActionButton(
-                    onPressed: controller.swipeLeft,
-                    backgroundColor: Colors.red,
-                    elevation: 0,
-                    child: const Icon(Icons.close),
-                  ),
-                  FloatingActionButton(
-                    onPressed: controller.swipeRight,
-                    backgroundColor: Colors.green,
-                    elevation: 0,
-                    child: const Icon(Icons.done),
-                  ),
-                  FloatingActionButton(
-                    onPressed: controller.undo,
-                    child: const Icon(Icons.undo),
-                  ),
-                  // FloatingActionButton(
-                  //   onPressed: controller.swipeTop,
-                  //   child: const Icon(Icons.keyboard_arrow_up),
-                  // ),
-                  // FloatingActionButton(
-                  //   onPressed: controller.swipeBottom,
-                  //   child: const Icon(Icons.keyboard_arrow_down),
-                  // ),
-                ],
-              ),
-            ),
-          ],
-        ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: 'Lista',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: 'Aulas',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
-  }
-
-  bool _onSwipe(
-      int previousIndex,
-      int? currentIndex,
-      CardSwiperDirection direction,
-      ) {
-    debugPrint(
-      'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
-    );
-    return true;
-  }
-
-  bool _onUndo(
-      int? previousIndex,
-      int currentIndex,
-      CardSwiperDirection direction,
-      ) {
-    debugPrint(
-      'The card $currentIndex was undod from the ${direction.name}',
-    );
-    return true;
   }
 }

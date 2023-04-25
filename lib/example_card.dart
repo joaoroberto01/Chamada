@@ -19,7 +19,7 @@ class ExampleCard extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: Colors.grey.withOpacity(0.04),
             spreadRadius: 3,
             blurRadius: 7,
             offset: const Offset(0, 3),
