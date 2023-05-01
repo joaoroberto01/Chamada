@@ -1,7 +1,6 @@
+import 'package:chamada/lista_aulas.dart';
 import 'package:chamada/tela_aulas.dart';
 import 'package:flutter/material.dart';
-import 'lista_aulas.dart';
-import 'tela_aulas.dart';
 
 void main() => runApp(const MyApp());
 
@@ -30,8 +29,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     const Text('Tela Home'),
-    Example(),
     TelaAulas(),
+    AulasScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -47,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -54,11 +54,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
-            label: 'Lista',
+            label: 'Aulas',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Aulas',
+            icon: Icon(Icons.account_balance),
+            label: 'Prof',
           ),
         ],
         currentIndex: _selectedIndex,

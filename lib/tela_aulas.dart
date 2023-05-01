@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:chamada/shared/environment.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 
 class Aula {
   final int id;
@@ -52,7 +57,10 @@ void _mostrarModal(BuildContext context, Aula aula) {
         actions: [
           ElevatedButton(
             child: Text("CONFIRMAR PRESENÇA"),
-            onPressed: () {
+            onPressed: () async {
+              // /chamada/alunos
+              /*final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/alunos'));
+              final data = jsonDecode(response.body);*/
               // Implementar ação ao marcar presença
               _mostrarNotificacao(context, aula);
               Navigator.of(context).pop();

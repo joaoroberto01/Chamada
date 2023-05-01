@@ -1,110 +1,170 @@
+import 'dart:convert';
+
+import 'package:chamada/lista_alunos.dart';
+import 'package:chamada/shared/environment.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-import 'example_card.dart';
-import 'example_candidate_model.dart';
+import 'package:http/http.dart' as http;
 
-class Example extends StatefulWidget {
-  const Example({
-    Key? key,
-  }) : super(key: key);
 
-  @override
-  State<Example> createState() => _ExamplePageState();
+enum DiaDaSemana { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY }
+
+class Aula {
+  final int id;
+  final String nome;
+  final DiaDaSemana diaDaSemana;
+
+  const Aula({required this.id, required this.nome, required this.diaDaSemana});
 }
 
-class _ExamplePageState extends State<Example> {
-  final CardSwiperController controller = CardSwiperController();
+class AulasScreen extends StatefulWidget {
+  @override
+  _AulasScreenState createState() => _AulasScreenState();
+}
 
-  final cards = candidates.map((candidate) => ExampleCard(candidate)).toList();
+class _AulasScreenState extends State<AulasScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // colher os dados do server
+    // _getTeacherClasses();
+  }
+
+  Future<void> _getTeacherClasses() async {
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/alunos'));
+    final data = jsonDecode(response.body);
+    setState(() {
+      // _message = data['message'];
+    });
+  }
+
+  // ATENÇÃO
+  // ATENÇÃO
+  // ATENÇÃO
+  // ATENÇÃO
+  // O Widget abaixoé temporário pois está funcionando com DADOS ESTÁTICOS.
+  // assim que as requisições forem feitas, os dados serão DINÂMICOS.
+
+  final List<Aula> aulas = [
+    Aula(id: 1, nome: "Matemática", diaDaSemana: DiaDaSemana.MONDAY),
+    Aula(id: 2, nome: "História", diaDaSemana: DiaDaSemana.TUESDAY),
+    Aula(id: 3, nome: "Biologia", diaDaSemana: DiaDaSemana.WEDNESDAY),
+    Aula(id: 4, nome: "Geografia", diaDaSemana: DiaDaSemana.THURSDAY),
+    Aula(id: 5, nome: "Português", diaDaSemana: DiaDaSemana.FRIDAY),
+  ];
+
+  DiaDaSemana? _diaSelecionado;
+
+  List<Aula> get _aulasFiltradas {
+    if (_diaSelecionado == null) {
+      return aulas;
+    } else {
+      return aulas.where((aula) => aula.diaDaSemana == _diaSelecionado).toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Flexible(
-              child: CardSwiper(
-                controller: controller,
-                cardsCount: cards.length,
-                numberOfCardsDisplayed: cards.length,
-                isLoop: false,
-                onSwipe: _onSwipe,
-                onUndo: _onUndo,
-                onEnd: () {
-                  print("ACABO");
-                },
-                padding: const EdgeInsets.all(24.0),
-                cardBuilder: (context, index) => cards[index],
-                isVerticalSwipingEnabled: false,
-              ),
+      appBar: AppBar(
+        title: Text("Aulas da semana"),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: DropdownButton<DiaDaSemana>(
+              value: _diaSelecionado,
+              onChanged: (value) {
+                setState(() {
+                  _diaSelecionado = value;
+                });
+              },
+              items: [
+                DropdownMenuItem(
+                  value: null,
+                  child: Text("Mostrar todas as aulas"),
+                ),
+                ...DiaDaSemana.values.map((dia) {
+                  return DropdownMenuItem(
+                    value: dia,
+                    child: Text(_getNomeDiaDaSemana(dia)),
+                  );
+                }).toList(),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // FloatingActionButton(
-                  //   onPressed: controller.undo,
-                  //   child: const Icon(Icons.rotate_left),
-                  // ),
-                  // FloatingActionButton(
-                  //   onPressed: controller.swipe,
-                  //   child: const Icon(Icons.rotate_right),
-                  // ),
-                  FloatingActionButton(
-                    onPressed: controller.swipeLeft,
-                    backgroundColor: Colors.red,
-                    elevation: 0,
-                    child: const Icon(Icons.close),
-                  ),
-                  FloatingActionButton(
-                    onPressed: controller.swipeRight,
-                    backgroundColor: Colors.green,
-                    elevation: 0,
-                    child: const Icon(Icons.done),
-                  ),
-                  FloatingActionButton(
-                    onPressed: controller.undo,
-                    elevation: 0,
-                    child: const Icon(Icons.undo),
-                  ),
-                  // FloatingActionButton(
-                  //   onPressed: controller.swipeTop,
-                  //   child: const Icon(Icons.keyboard_arrow_up),
-                  // ),
-                  // FloatingActionButton(
-                  //   onPressed: controller.swipeBottom,
-                  //   child: const Icon(Icons.keyboard_arrow_down),
-                  // ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+          Expanded(
+              child: _aulasFiltradas.isEmpty
+                ? Center(
+                    child: Text("Você não possui aulas neste dia."),
+              )
+                : ListView.builder(
+                    itemCount: _aulasFiltradas.length,
+                    itemBuilder: (context, index) {
+                      final aula = _aulasFiltradas[index];
+                      return GestureDetector(
+                        onTap: () {
+                          _mostrarModal(context, aula);
+                        },
+                        child: Card(
+                          child: ListTile(
+                            leading: Icon(Icons.account_balance),
+                            title: Text(aula.nome),
+                          ),
+                        ),
+                      );
+                    },
+              )
+          ),
+        ],
       ),
     );
   }
+
+  void _mostrarModal(BuildContext context, Aula aula) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(aula.nome),
+          content: Text("Testando"),
+          actions: [
+            ElevatedButton(
+              child: Text("Iniciar chamada"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Example(aula: aula)),
+                );
+              },
+            ),
+            /*TextButton(
+              child: Text("Fechar"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),*/
+          ],
+        );
+      },
+    );
+  }
+
+  String _getNomeDiaDaSemana(DiaDaSemana dia) {
+    switch (dia) {
+      case DiaDaSemana.MONDAY:
+        return "Segunda-feira";
+      case DiaDaSemana.TUESDAY:
+        return "Terça-feira";
+      case DiaDaSemana.WEDNESDAY:
+        return "Quarta-feira";
+      case DiaDaSemana.THURSDAY:
+        return "Quinta-feira";
+      case DiaDaSemana.FRIDAY:
+        return "Sexta-feira";
+      default:
+        return "";
+    }
+  }
 }
-
-  bool _onSwipe(
-      int previousIndex,
-      int? currentIndex,
-      CardSwiperDirection direction,
-      ) {
-    debugPrint(
-      'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
-    );
-    return true;
-  }
-
-  bool _onUndo(
-      int? previousIndex,
-      int currentIndex,
-      CardSwiperDirection direction,
-      ) {
-    debugPrint(
-      'The card $currentIndex was undod from the ${direction.name}',
-    );
-    return true;
-  }
