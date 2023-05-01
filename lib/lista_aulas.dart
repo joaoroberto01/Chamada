@@ -9,11 +9,23 @@ import 'package:http/http.dart' as http;
 enum DiaDaSemana { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY }
 
 class Aula {
-  final int id;
+  final String id;
+  final String disciplinaId;
   final String nome;
-  final DiaDaSemana diaDaSemana;
+  final String diaDaSemana;
+  final String horario;
 
-  const Aula({required this.id, required this.nome, required this.diaDaSemana});
+  Aula({required this.id, required this.disciplinaId, required this.nome, required this.diaDaSemana, required this.horario});
+
+  factory Aula.fromJson(Map<String, dynamic> json) {
+    return Aula(
+      id: json['id'],
+      disciplinaId: json['disciplinaId'],
+      nome: json['disciplina']['nome'],
+      diaDaSemana: json['diaDaSemana'],
+      horario: json['horario']
+    );
+  }
 }
 
 class AulasScreen extends StatefulWidget {
@@ -22,35 +34,32 @@ class AulasScreen extends StatefulWidget {
 }
 
 class _AulasScreenState extends State<AulasScreen> {
+  List<Aula> aulas = [];
+
+  List<Aula> getAulas(List<dynamic> jsonResponse) {
+    List<Aula> aulas = [];
+    for(dynamic data in jsonResponse) {
+      Aula aula = Aula.fromJson(data);
+      aulas.add(aula);
+    }
+    return aulas;
+  }
+
   @override
   void initState() {
     super.initState();
     // colher os dados do server
-    // _getTeacherClasses();
+    _getTeacherClasses();
   }
 
   Future<void> _getTeacherClasses() async {
-    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/alunos'));
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/aulas/professor/ad73bdd4-81a9-47f5-89fd-04526c16ffb4'));
     final data = jsonDecode(response.body);
     setState(() {
-      // _message = data['message'];
+      aulas = getAulas(data);
     });
   }
 
-  // ATENÇÃO
-  // ATENÇÃO
-  // ATENÇÃO
-  // ATENÇÃO
-  // O Widget abaixoé temporário pois está funcionando com DADOS ESTÁTICOS.
-  // assim que as requisições forem feitas, os dados serão DINÂMICOS.
-
-  final List<Aula> aulas = [
-    Aula(id: 1, nome: "Matemática", diaDaSemana: DiaDaSemana.MONDAY),
-    Aula(id: 2, nome: "História", diaDaSemana: DiaDaSemana.TUESDAY),
-    Aula(id: 3, nome: "Biologia", diaDaSemana: DiaDaSemana.WEDNESDAY),
-    Aula(id: 4, nome: "Geografia", diaDaSemana: DiaDaSemana.THURSDAY),
-    Aula(id: 5, nome: "Português", diaDaSemana: DiaDaSemana.FRIDAY),
-  ];
 
   DiaDaSemana? _diaSelecionado;
 
@@ -58,7 +67,7 @@ class _AulasScreenState extends State<AulasScreen> {
     if (_diaSelecionado == null) {
       return aulas;
     } else {
-      return aulas.where((aula) => aula.diaDaSemana == _diaSelecionado).toList();
+      return aulas.where((aula) => aula.diaDaSemana == _diaSelecionado.toString().split('.')[1]).toList();
     }
   }
 
@@ -111,6 +120,7 @@ class _AulasScreenState extends State<AulasScreen> {
                           child: ListTile(
                             leading: Icon(Icons.account_balance),
                             title: Text(aula.nome),
+                            subtitle: Text(aula.horario),
                           ),
                         ),
                       );
@@ -128,7 +138,7 @@ class _AulasScreenState extends State<AulasScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(aula.nome),
-          content: Text("Testando"),
+          content: Text('Horário: ${aula.horario}'),
           actions: [
             ElevatedButton(
               child: Text("Iniciar chamada"),
@@ -139,12 +149,6 @@ class _AulasScreenState extends State<AulasScreen> {
                 );
               },
             ),
-            /*TextButton(
-              child: Text("Fechar"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),*/
           ],
         );
       },
