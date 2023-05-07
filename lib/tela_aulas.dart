@@ -58,9 +58,6 @@ void _mostrarModal(BuildContext context, Aula aula) {
           ElevatedButton(
             child: Text("CONFIRMAR PRESENÇA"),
             onPressed: () async {
-              // /chamada/alunos
-              /*final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/alunos'));
-              final data = jsonDecode(response.body);*/
               // Implementar ação ao marcar presença
               _mostrarNotificacao(context, aula);
               Navigator.of(context).pop();

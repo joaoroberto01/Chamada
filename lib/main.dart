@@ -1,4 +1,6 @@
+import 'package:chamada/aulas_admin.dart';
 import 'package:chamada/lista_aulas.dart';
+import 'package:chamada/tela_admin.dart';
 import 'package:chamada/tela_aulas.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static List<Widget> _widgetOptions = <Widget>[
     const Text('Tela Home'),
     TelaAulas(),
+    AulasAdmin(),
     AulasScreen()
   ];
 
@@ -55,6 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.list),
             label: 'Aulas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.security),
+            label: 'Admin',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_balance),
