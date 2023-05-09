@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'aulas_admin.dart';
 
 class Aluno {
-  final int alunoId;
+  final String alunoId;
   final String nome;
   final String ra;
   final String curso;
@@ -15,7 +15,7 @@ class Aluno {
 
   factory Aluno.fromJson(Map<String, dynamic> json) {
     return Aluno(
-      alunoId: json['alunoId'],
+      alunoId: json['id'],
       nome: json['nome'],
       ra: json['ra'],
       curso: json['curso']
@@ -57,7 +57,7 @@ class _ListViewAlunosState extends State<ListViewAlunos> {
   }
 
   Future<void> _getStudents() async {
-    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/aulas/professor/ad73bdd4-81a9-47f5-89fd-04526c16ffb4'));
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/matriculas/disciplina/${widget.aula.disciplinaId}'));
     final data = jsonDecode(response.body);
     setState(() {
       alunos = getAlunos(data);
@@ -65,7 +65,7 @@ class _ListViewAlunosState extends State<ListViewAlunos> {
   }
 
   Future<void> _enviarAlunosSelecionados() async {
-    final List<int> selectedIds = _selectedAlunos.map((aluno) => aluno.alunoId).toList();
+    final List<String> selectedIds = _selectedAlunos.map((aluno) => aluno.alunoId).toList();
     final url = Uri.parse('${Environment.BASE_URL}/chamada/matriculas');
     final response = await http.post(
       url,
@@ -134,7 +134,11 @@ class _ListViewAlunosState extends State<ListViewAlunos> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
+                child: alunos.isEmpty
+                    ? Center(
+                  child: Text("Não existem alunos nesta disciplina."),
+                )
+                  : ListView.builder(
                   itemCount: alunos.length,
                   itemBuilder: (context, index) {
                     final aluno = alunos[index];

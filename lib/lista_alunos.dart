@@ -40,11 +40,21 @@ class _ExamplePageState extends State<Example> {
 
   final CardSwiperController controller = CardSwiperController();
 
-  final cards = candidates.map((candidate) => ExampleCard(candidate)).toList();
+  // final cards = candidates.map((candidate) => ExampleCard(candidate)).toList();
 
   @override
   Widget build(BuildContext context) {
     Aula aula = widget.aula; // acessando a instância de 'Aula'
+    var alunos;
+
+    FutureBuilder<List<ExampleCandidateModel>>(
+      future: fetchCandidates(),
+      builder: (context, snapshot) {
+        if(snapshot.hasData) {
+          alunos = snapshot.data!;
+        }
+      },
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -79,8 +89,8 @@ class _ExamplePageState extends State<Example> {
             Flexible(
               child: CardSwiper(
                 controller: controller,
-                cardsCount: cards.length,
-                numberOfCardsDisplayed: cards.length,
+                cardsCount: alunos.length,
+                numberOfCardsDisplayed: alunos.length,
                 isLoop: false,
                 onSwipe: _onSwipe,
                 onUndo: _onUndo,
@@ -88,7 +98,7 @@ class _ExamplePageState extends State<Example> {
                   print("ACABO");
                 },
                 padding: const EdgeInsets.all(24.0),
-                cardBuilder: (context, index) => cards[index],
+                cardBuilder: (context, index) => alunos[index],
                 isVerticalSwipingEnabled: false,
               ),
             ),
@@ -146,7 +156,8 @@ class _ExamplePageState extends State<Example> {
       CardSwiperDirection direction,
       ) {
     debugPrint(
-      'The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top',
+
+      'The card $previousIndex was swiped to the ${direction.name} / $direction. Now the card $currentIndex is on top',
     );
     return true;
   }
