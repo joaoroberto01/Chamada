@@ -53,7 +53,7 @@ class _AulasScreenState extends State<AulasScreen> {
   }
 
   Future<void> _getTeacherClasses() async {
-    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/aulas/professor/ad73bdd4-81a9-47f5-89fd-04526c16ffb4'));
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/aulas/professor/1b541ffb-18f8-4936-a12a-41d48e2ac8e9'));
     final data = jsonDecode(response.body);
     setState(() {
       aulas = getAulas(data);

@@ -47,7 +47,7 @@ class ExampleCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  candidate.name,
+                  candidate.nome,
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class ExampleCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  candidate.job,
+                  candidate.ra,
                   style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 15,
@@ -64,7 +64,7 @@ class ExampleCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  candidate.city,
+                  candidate.curso,
                   style: const TextStyle(color: Colors.grey),
                 )
               ],

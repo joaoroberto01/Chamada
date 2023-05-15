@@ -17,47 +17,29 @@ class ExampleCandidateModel {
   });
 }
 
-Future<List<ExampleCandidateModel>> fetchCandidates() async {
-  final response = await http.get(Uri.parse('http://example.com/candidates'));
-
-  if (response.statusCode == 200) {
-    final List<dynamic> data = jsonDecode(response.body);
-
-    return data.map((candidate) => ExampleCandidateModel(
-      nome: candidate['nome'],
-      curso: candidate['curso'],
-      ra: candidate['ra'],
-      color: List<Color>.from(candidate['color'].map((c) => Color(c))),
-    )).toList();
-  } else {
-    throw Exception('Failed to load candidates');
-  }
-}
-
-/*
 final List<ExampleCandidateModel> candidates = [
   ExampleCandidateModel(
-    name: 'One, 1',
-    job: 'Developer',
-    city: 'Areado',
+    nome: 'João',
+    curso: 'Computação',
+    ra: '20904344',
     color: const [Color(0xFFFF3868), Color(0xFFFFB49A)],
   ),
   ExampleCandidateModel(
-    name: 'Two, 2',
-    job: 'Manager',
-    city: 'New York',
+    nome: 'Arnaldo',
+    curso: 'Software',
+    ra: '34545500',
     color: const [Color(0xFF736EFE), Color(0xFF62E4EC)],
   ),
   ExampleCandidateModel(
-    name: 'Three, 3',
-    job: 'Engineer',
-    city: 'London',
+    nome: 'Sofia',
+    curso: 'Filosofia',
+    ra: '22331122',
     color: const [Color(0xFF2F80ED), Color(0xFF56CCF2)],
   ),
   ExampleCandidateModel(
-    name: 'Four, 4',
-    job: 'Designer',
-    city: 'Tokyo',
+    nome: 'Miguel',
+    curso: 'Design Digital',
+    ra: '17865544',
     color: const [Color(0xFF0BA4E0), Color(0xFFA9E4BD)],
   ),
-];*/
+];

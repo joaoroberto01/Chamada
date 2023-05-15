@@ -40,21 +40,12 @@ class _ExamplePageState extends State<Example> {
 
   final CardSwiperController controller = CardSwiperController();
 
-  // final cards = candidates.map((candidate) => ExampleCard(candidate)).toList();
+  final cards = candidates.map((candidate) => ExampleCard(candidate)).toList();
 
   @override
   Widget build(BuildContext context) {
     Aula aula = widget.aula; // acessando a instância de 'Aula'
-    var alunos;
 
-    FutureBuilder<List<ExampleCandidateModel>>(
-      future: fetchCandidates(),
-      builder: (context, snapshot) {
-        if(snapshot.hasData) {
-          alunos = snapshot.data!;
-        }
-      },
-    );
 
     return Scaffold(
       appBar: AppBar(
@@ -89,8 +80,8 @@ class _ExamplePageState extends State<Example> {
             Flexible(
               child: CardSwiper(
                 controller: controller,
-                cardsCount: alunos.length,
-                numberOfCardsDisplayed: alunos.length,
+                cardsCount: cards.length,
+                numberOfCardsDisplayed: cards.length,
                 isLoop: false,
                 onSwipe: _onSwipe,
                 onUndo: _onUndo,
@@ -98,7 +89,7 @@ class _ExamplePageState extends State<Example> {
                   print("ACABO");
                 },
                 padding: const EdgeInsets.all(24.0),
-                cardBuilder: (context, index) => alunos[index],
+                cardBuilder: (context, index) => cards[index],
                 isVerticalSwipingEnabled: false,
               ),
             ),

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chamada/shared/environment.dart';
 import 'package:chamada/tela_admin.dart';
+import 'package:chamada/tela_prof_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -70,29 +71,6 @@ class _AulasAdminState extends State<AulasAdmin> {
       ),
       body: Column(
         children: [
-          /*Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: DropdownButton<DiaDaSemana>(
-              value: _diaSelecionado,
-              onChanged: (value) {
-                setState(() {
-                  _diaSelecionado = value;
-                });
-              },
-              items: [
-                DropdownMenuItem(
-                  value: null,
-                  child: Text("Mostrar todas as aulas"),
-                ),
-                ...DiaDaSemana.values.map((dia) {
-                  return DropdownMenuItem(
-                    value: dia,
-                    child: Text(_getNomeDiaDaSemana(dia)),
-                  );
-                }).toList(),
-              ],
-            ),
-          ),*/
           Expanded(
               child:
               ListView.builder(
@@ -101,9 +79,10 @@ class _AulasAdminState extends State<AulasAdmin> {
                   final aula = _aulasFiltradas[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      _mostrarModal(context, aulas[index]);
+                      /*Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ListViewAlunos(aula: aula)));
+                          MaterialPageRoute(builder: (context) => ListViewAlunos(aula: aula)));*/
                     },
                     child: Card(
                       child: ListTile(
@@ -128,11 +107,20 @@ class _AulasAdminState extends State<AulasAdmin> {
           title: Text(aula.nome),
           actions: [
             ElevatedButton(
-              child: Text("Gerenciar disciplina"),
+              child: Text("Gerenciar alunos"),
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ListViewAlunos(aula: aula)),
+                );
+              },
+            ),
+            ElevatedButton(
+              child: Text("Gerenciar professores"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ListViewProfessor(aula: aula)),
                 );
               },
             ),
@@ -142,20 +130,4 @@ class _AulasAdminState extends State<AulasAdmin> {
     );
   }
 
-  String _getNomeDiaDaSemana(DiaDaSemana dia) {
-    switch (dia) {
-      case DiaDaSemana.MONDAY:
-        return "Segunda-feira";
-      case DiaDaSemana.TUESDAY:
-        return "Terça-feira";
-      case DiaDaSemana.WEDNESDAY:
-        return "Quarta-feira";
-      case DiaDaSemana.THURSDAY:
-        return "Quinta-feira";
-      case DiaDaSemana.FRIDAY:
-        return "Sexta-feira";
-      default:
-        return "";
-    }
-  }
 }
