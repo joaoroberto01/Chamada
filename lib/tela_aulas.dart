@@ -31,9 +31,9 @@ class _TelaAulasState extends State<TelaAulas> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Text("Aulas"),
-      ),
+      ),*/
       body: ListView.builder(
         itemCount: aulas.length,
         itemBuilder: (BuildContext context, int index) {

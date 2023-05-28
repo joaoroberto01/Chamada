@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chamada/alunos_aula.dart';
 import 'package:chamada/shared/environment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -45,8 +46,7 @@ class _ExamplePageState extends State<Example> {
   @override
   Widget build(BuildContext context) {
     Aula aula = widget.aula; // acessando a instância de 'Aula'
-
-
+    
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -64,10 +64,10 @@ class _ExamplePageState extends State<Example> {
             margin: EdgeInsets.symmetric(horizontal: 10.0),
             child: IconButton(
                 onPressed: () {
-                  /*Navigator.push(
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Example(aula: aula)),
-                  );*/
+                    MaterialPageRoute(builder: (context) => ListAlunosAula(aula: aula.disciplinaId)),
+                  );
                 },
                 icon: Icon(Icons.settings)),
           )

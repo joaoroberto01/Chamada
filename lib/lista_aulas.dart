@@ -53,7 +53,7 @@ class _AulasScreenState extends State<AulasScreen> {
   }
 
   Future<void> _getTeacherClasses() async {
-    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/aulas/professor/1b541ffb-18f8-4936-a12a-41d48e2ac8e9'));
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/aulas/professor/52e0f50a-d45e-4b68-a196-d75f85513199'));
     final data = jsonDecode(response.body);
     setState(() {
       aulas = getAulas(data);
@@ -74,10 +74,10 @@ class _AulasScreenState extends State<AulasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Text("Aulas da semana"),
         centerTitle: true,
-      ),
+      ),*/
       body: Column(
         children: [
           Padding(

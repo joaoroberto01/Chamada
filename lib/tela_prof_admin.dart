@@ -6,19 +6,21 @@ import 'package:http/http.dart' as http;
 import 'aulas_admin.dart';
 
 class Professor {
-  final String alunoId;
+  final String id;
   final String nome;
-  final String ra;
-  final String curso;
+  // final String ra;
+  // final String curso;
 
-  Professor({required this.alunoId, required this.nome, required this.ra, required this.curso});
+  // Professor({required this.alunoId, required this.nome, required this.ra, required this.curso});
+  Professor({required this.id, required this.nome});
+
 
   factory Professor.fromJson(Map<String, dynamic> json) {
     return Professor(
-        alunoId: json['id'],
+        id: json['id'],
         nome: json['nome'],
-        ra: json['ra'],
-        curso: json['curso']
+        // ra: json['ra'],
+        // curso: json['curso']
     );
   }
 }
@@ -57,7 +59,7 @@ class _ListViewProfessorState extends State<ListViewProfessor> {
   }
 
   Future<void> _getProfessores() async {
-    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/matriculas/disciplina/${widget.aula.disciplinaId}'));
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/professores'));
     final data = jsonDecode(response.body);
     setState(() {
       professores = getProfessores(data);
@@ -65,8 +67,8 @@ class _ListViewProfessorState extends State<ListViewProfessor> {
   }
 
   Future<void> _enviarProfessoresSelecionados() async {
-    final List<String> selectedIds = _selectedProfessores.map((professor) => professor.alunoId).toList();
-    final url = Uri.parse('${Environment.BASE_URL}/chamada/matriculas');
+    final List<String> selectedIds = _selectedProfessores.map((professor) => professor.id).toList();
+    final url = Uri.parse('${Environment.BASE_URL}/chamada/professores');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -143,8 +145,8 @@ class _ListViewProfessorState extends State<ListViewProfessor> {
                     itemBuilder: (context, index) {
                       final professor = professores[index];
                       return CheckboxListTile(
-                        title: Text('${professor.nome} (${professor.curso})'),
-                        subtitle: Text('RA: ${professor.ra}'),
+                        title: Text('${professor.nome}'),
+                        subtitle: Text('RA: 00000000'),
                         value: _selectedProfessores.contains(professor),
                         onChanged: (bool? value) {
                           setState(() {
