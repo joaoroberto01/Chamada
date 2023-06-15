@@ -8,8 +8,8 @@ import 'aulas_admin.dart';
 class Aluno {
   final String alunoId;
   final String nome;
-  final String ra;
-  final String curso;
+  final String? ra;
+  final String? curso;
 
   Aluno({required this.alunoId, required this.nome, required this.ra, required this.curso});
 

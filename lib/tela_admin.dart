@@ -8,8 +8,8 @@ import 'aulas_admin.dart';
 class Aluno {
   final String alunoId;
   final String nome;
-  final String ra;
-  final String curso;
+  final String? ra;
+  final String? curso;
 
   Aluno({required this.alunoId, required this.nome, required this.ra, required this.curso});
 
@@ -57,7 +57,8 @@ class _ListViewAlunosState extends State<ListViewAlunos> {
   }
 
   Future<void> _getStudents() async {
-    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/matriculas/disciplina/${widget.aula.disciplinaId}'));
+    // final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/matriculas/disciplina/${widget.aula.disciplinaId}'));
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/alunos'));
     final data = jsonDecode(response.body);
     setState(() {
       alunos = getAlunos(data);
@@ -70,7 +71,7 @@ class _ListViewAlunosState extends State<ListViewAlunos> {
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'aulaId': widget.aula.disciplinaId, 'alunos': selectedIds}),
+      body: jsonEncode({'disciplinaId': widget.aula.disciplinaId, 'alunos': selectedIds}),
     );
     if (response.statusCode == 200) {
       // sucesso ao enviar alunos selecionados
@@ -143,7 +144,7 @@ class _ListViewAlunosState extends State<ListViewAlunos> {
                   itemBuilder: (context, index) {
                     final aluno = alunos[index];
                     return CheckboxListTile(
-                      title: Text('${aluno.nome} (${aluno.curso})'),
+                      title: Text('${aluno.nome}'),
                       subtitle: Text('RA: ${aluno.ra}'),
                       value: _selectedAlunos.contains(aluno),
                       onChanged: (bool? value) {

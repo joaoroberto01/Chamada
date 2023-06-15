@@ -19,27 +19,39 @@ class ExampleCandidateModel {
 
 final List<ExampleCandidateModel> candidates = [
   ExampleCandidateModel(
-    nome: 'João',
-    curso: 'Computação',
-    ra: '20904344',
+    nome: 'Enzo Padovani',
+    curso: 'Engenharia de Computação',
+    ra: '20000001',
     color: const [Color(0xFFFF3868), Color(0xFFFFB49A)],
   ),
   ExampleCandidateModel(
-    nome: 'Arnaldo',
-    curso: 'Software',
-    ra: '34545500',
+    nome: 'João Cavina',
+    curso: 'Engenharia de Computação',
+    ra: '20000002',
     color: const [Color(0xFF736EFE), Color(0xFF62E4EC)],
   ),
   ExampleCandidateModel(
-    nome: 'Sofia',
-    curso: 'Filosofia',
-    ra: '22331122',
+    nome: 'Vinicius Dezotti',
+    curso: 'Engenharia de Computação',
+    ra: '20000003',
     color: const [Color(0xFF2F80ED), Color(0xFF56CCF2)],
   ),
   ExampleCandidateModel(
-    nome: 'Miguel',
-    curso: 'Design Digital',
-    ra: '17865544',
+    nome: 'Luis Ciarbello',
+    curso: 'Engenharia de Computação',
+    ra: '20000004',
+    color: const [Color(0xFF0BA4E0), Color(0xFFA9E4BD)],
+  ),
+  ExampleCandidateModel(
+    nome: 'Joao Moraes',
+    curso: 'Engenharia de Computação',
+    ra: '20000005',
+    color: const [Color(0xFF0BA4E0), Color(0xFFA9E4BD)],
+  ),
+  ExampleCandidateModel(
+    nome: 'Jose Manga',
+    curso: 'Agronomia',
+    ra: '20000006',
     color: const [Color(0xFF0BA4E0), Color(0xFFA9E4BD)],
   ),
 ];

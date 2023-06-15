@@ -198,11 +198,36 @@ class _AulasAdminState extends State<AulasAdmin> {
 
   TextEditingController _novaDisciplinaController = TextEditingController();
 
-  void _adicionarDisciplina() {
+  void _adicionarDisciplina() async {
     String nomeDisciplina = _novaDisciplinaController.text;
 
-    // Realizar a lógica para adicionar a disciplina
-    // Exemplo: enviar requisição HTTP para adicionar no servidor
+    // Criar um mapa com os dados da disciplina
+    Map<String, dynamic> disciplinaData = {
+      'nome': nomeDisciplina,
+      // Adicione aqui outros campos necessários para a disciplina
+    };
+
+    // Converter o mapa para JSON
+    String disciplinaJson = jsonEncode(disciplinaData);
+
+    try {
+      // Enviar a solicitação POST para o servidor
+      final response = await http.post(
+        Uri.parse('${Environment.BASE_URL}/chamada/disciplinas'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: disciplinaJson,
+      );
+
+      if (response.statusCode == 200) {
+        print('disciplina criada');
+      } else {
+        print('erro ao criar disciplina');
+      }
+    } catch (e) {
+      print(e);
+    }
 
     setState(() {
       // Adicionar a nova disciplina à lista de aulas
@@ -214,12 +239,32 @@ class _AulasAdminState extends State<AulasAdmin> {
     Navigator.of(context).pop();
   }
 
-  void _removerDisciplina(int index) {
+
+  void _removerDisciplina(int index) async {
+    final disciplinaRemovida = aulas[index];
+    print(disciplinaRemovida.disciplinaId);
+
+    try {
+      // Enviar a solicitação DELETE para o servidor
+      final response = await http.delete(
+        Uri.parse('${Environment.BASE_URL}/chamada/disciplinas/${disciplinaRemovida.disciplinaId}'),
+      );
+
+      if (response.statusCode == 200) {
+        print('disciplina removida');
+      } else {
+        print('erro ao remover disciplina');
+      }
+    } catch (e) {
+      print(e);
+    }
+
     setState(() {
-      // Remover a disciplina da lista
+      // Remover a disciplina da lista localmente
       aulas.removeAt(index);
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -66,10 +66,12 @@ class _ListViewProfessorState extends State<ListViewProfessor> {
     });
   }
 
+  //
   Future<void> _enviarProfessoresSelecionados() async {
     final List<String> selectedIds = _selectedProfessores.map((professor) => professor.id).toList();
-    final url = Uri.parse('${Environment.BASE_URL}/chamada/professores');
-    final response = await http.post(
+    final url = Uri.parse('${Environment.BASE_URL}/chamada/disciplinas/${widget.aula.disciplinaId}/vincular-professor/${selectedIds.first}');
+    print(url);
+    final response = await http.put(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'aulaId': widget.aula.disciplinaId, 'professores': selectedIds}),
@@ -146,7 +148,6 @@ class _ListViewProfessorState extends State<ListViewProfessor> {
                       final professor = professores[index];
                       return CheckboxListTile(
                         title: Text('${professor.nome}'),
-                        subtitle: Text('RA: 00000000'),
                         value: _selectedProfessores.contains(professor),
                         onChanged: (bool? value) {
                           setState(() {

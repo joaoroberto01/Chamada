@@ -4,6 +4,9 @@ import 'package:chamada/lista_alunos.dart';
 import 'package:chamada/shared/environment.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
+import 'app_state.dart';
 
 
 enum DiaDaSemana { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY }
@@ -53,7 +56,10 @@ class _AulasScreenState extends State<AulasScreen> {
   }
 
   Future<void> _getTeacherClasses() async {
-    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/aulas/professor/52e0f50a-d45e-4b68-a196-d75f85513199'));
+    final appState = Provider.of<AppState>(context, listen: false);
+    String? userId = appState.userId;
+
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/chamada/aulas/professor/$userId'));
     final data = jsonDecode(response.body);
     setState(() {
       aulas = getAulas(data);
