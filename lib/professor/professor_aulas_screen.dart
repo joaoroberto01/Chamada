@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chamada/models/aula.dart';
 import 'package:chamada/models/dia_da_semana.dart';
 import 'package:chamada/professor/professor_chamada_screen.dart';
+import 'package:chamada/professor/professor_relatorio.dart';
 import 'package:chamada/shared/environment.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -133,11 +134,26 @@ class _ProfessorAulasScreenState extends State<ProfessorAulasScreen> {
                 _getTeacherClasses();
               },
             ),
+            OutlinedButton(
+              child: const Text("Relatório de Presença"),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop('dialog');
+                _abrirTelaRelatorioPresenca(aula.disciplinaId);
+              },
+            ),
           ],
         );
       },
     );
   }
+
+  void _abrirTelaRelatorioPresenca(String disciplinaId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RelatorioProfessor(disciplinaId: disciplinaId)),
+    );
+  }
+
 
   String _getNomeDiaDaSemana(DiaDaSemana dia) {
     switch (dia) {
