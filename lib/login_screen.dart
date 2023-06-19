@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
           'senha': senha,
         };
 
-        var url = Uri.parse('${Environment.BASE_URL}/chamada/usuarios/login');
+        var url = Uri.parse('${Environment.BASE_URL}/usuarios/login');
 
         var response = await http.post(
           url,
@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Image.asset(
-                  'lib/assets/images/logo.png', // Substitua pelo caminho da sua imagem
+                  'images/rollcall.png', // Substitua pelo caminho da sua imagem
                   width: 200,
                   height: 200,
                 ),

@@ -1,23 +1,14 @@
-
-import 'dart:convert';
-
-import 'package:chamada/aulas_admin.dart';
-import 'package:chamada/lista_aulas.dart';
-import 'package:chamada/shared/environment.dart';
-import 'package:chamada/tela_admin.dart';
-import 'package:chamada/tela_aulas.dart';
-import 'package:flutter/material.dart';
-import 'package:chamada/cadastro_screen.dart';
+import 'package:chamada/admin/admin_cadastro_screen.dart';
+import 'package:chamada/admin/admin_disciplinas_screen.dart';
+import 'package:chamada/alunos/aluno_aulas_screen.dart';
 import 'package:chamada/login_screen.dart';
-
+import 'package:chamada/professor/professor_aulas_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import 'Image_screen.dart';
+import 'alunos/aluno_image_screen.dart';
 import 'app_state.dart';
 
-// void main() => runApp(const MyApp());
 
 void main() {
   runApp(
@@ -55,58 +46,75 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<String> _userTypes = [];
   int _selectedIndex = 0;
+  VoidCallback? onRefresh;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _userTypes = (ModalRoute.of(context)!.settings.arguments as String).split(',');
+    _userTypes =
+        (ModalRoute.of(context)!.settings.arguments as String).split(',');
   }
 
-  static List<MenuItem> _menuItems = [
-    MenuItem(
-        'Home',
-        Icons.home,
-        Center(child: Text(
-            'Seja bem-vindo',
-        )),
-        ['ADMIN', 'PROFESSOR', 'ALUNO']),
-    MenuItem('Aulas', Icons.list, TelaAulas(), ['ALUNO']),
-    MenuItem('Disciplinas', Icons.security, AulasAdmin(), ['ADMIN']),
-    MenuItem('Aulas', Icons.account_balance, AulasScreen(), ['PROFESSOR']),
-    MenuItem('Cadastro', Icons.person_add, CadastroScreen(), ['ADMIN']),
-    MenuItem('Foto', Icons.image, ImageScreen(), ['ALUNO']),
+
+
+  final List<MenuItem> _menuItems = [
+    MenuItem('Foto de perfil', Icons.image, AlunoImageScreen(), ['ALUNO']),
+    MenuItem('Cadastro', Icons.person_add, const AdminCadastroScreen(), ['ADMIN']),
+    MenuItem('Aulas', Icons.account_balance, ProfessorAulasScreen(), ['PROFESSOR']),
   ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   void _openDrawer() {
     _scaffoldKey.currentState!.openDrawer();
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    final GlobalKey<AlunoAulasScreenState> _alunoAulasScreenState = GlobalKey<AlunoAulasScreenState>();
+    final alunoAulasMenuItem = MenuItem('Aulas da semana', Icons.list, AlunoAulasScreen(key: _alunoAulasScreenState), ['ALUNO']);
+    alunoAulasMenuItem.onRefresh = () => _alunoAulasScreenState.currentState?.getAulas();
+    _menuItems.add(alunoAulasMenuItem);
+
+    final GlobalKey<AdminDisciplinasScreenState> _adminDisciplinasScreenState = GlobalKey<AdminDisciplinasScreenState>();
+    final disciplinasMenuItem = MenuItem('Disciplinas', Icons.security, AdminDisciplinasScreen(key: _adminDisciplinasScreenState), ['ADMIN']);
+    disciplinasMenuItem.onRefresh = () => _adminDisciplinasScreenState.currentState?.getClasses();
+    _menuItems.add(disciplinasMenuItem);
+
+    _menuItems.sort((a, b) => a.title.compareTo(b.title));
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+
     var filteredMenuItems = _menuItems.where((item) {
       return _userTypes.any(item.userTypes.contains);
     }).toList();
 
+    final menuItem = filteredMenuItems[_selectedIndex];
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text(filteredMenuItems[_selectedIndex].title),
+        title: Text(menuItem.title),
         leading: IconButton(
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: _openDrawer,
         ),
+        actions: [
+          if (menuItem.onRefresh != null)
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: menuItem.onRefresh,
+            )
+        ],
       ),
       drawer: Drawer(
         child: Container(
-          padding: EdgeInsets.only(top: 50.0),
+          padding: const EdgeInsets.only(top: 50.0),
           height: MediaQuery.of(context).size.height,
           child: ListView(
             padding: EdgeInsets.zero,
@@ -118,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: ListTile(
                     leading: Icon(
                       filteredMenuItems[i].icon,
-                      size: i == _selectedIndex ? 30 : 24,
+                      size: 24,//i == _selectedIndex ? 30 : 24,
                       color: i == _selectedIndex
                           ? Colors.blueAccent
                           : Colors.black,
@@ -129,6 +137,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         fontWeight: i == _selectedIndex
                             ? FontWeight.bold
                             : FontWeight.normal,
+                        color: i == _selectedIndex
+                            ? Colors.blueAccent
+                            : Colors.black,
                       ),
                     ),
                     onTap: () {
@@ -136,41 +147,30 @@ class _MyHomePageState extends State<MyHomePage> {
                         _selectedIndex = i;
                         if (Navigator.canPop(context)) {
                           Navigator.pop(context);
-                        } else if (_selectedIndex == filteredMenuItems.length - 1) {
-                          _onItemTapped(_selectedIndex);
                         }
                       });
                     },
                   ),
                 ),
+              const Divider(thickness: 2,),
+              ListTile(
+                leading: const Icon(
+                    Icons.exit_to_app,
+                    size: 24,//i == _selectedIndex ? 30 : 24,
+                    color: Colors.red
+                ),
+                title: const Text("Sair", style: TextStyle(fontWeight: FontWeight.normal),),
+                onTap: (){
+                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                },
+              )
             ],
           ),
         ),
       ),
       body: Stack(
         children: [
-          filteredMenuItems[_selectedIndex].screen,
-          if (_selectedIndex == 0)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade500, // Cor de fundo em vermelho suave
-                  ),
-                  child: Text(
-                    'Sair',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          filteredMenuItems[_selectedIndex].screen
         ],
       ),
     );
@@ -182,6 +182,7 @@ class MenuItem {
   final IconData icon;
   final Widget screen;
   final List<String> userTypes;
+  VoidCallback? onRefresh;
 
   MenuItem(this.title, this.icon, this.screen, this.userTypes);
 }

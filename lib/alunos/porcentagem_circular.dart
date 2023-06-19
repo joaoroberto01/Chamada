@@ -21,7 +21,6 @@ class PorcentagemCircular extends StatelessWidget {
                 strokeWidth: 5,
                 backgroundColor: Colors.grey,
                 color: Colors.blue,
-                semanticsValue: 'TESTE',
               ),
             ),
           ),
