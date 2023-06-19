@@ -1,12 +1,12 @@
 class Aluno {
-  final String alunoId;
+  final String id;
   final String nome;
   final String? ra;
   final String? curso;
   final String? fotoUrl;
 
   Aluno(
-      {required this.alunoId,
+      {required this.id,
         required this.nome,
         required this.ra,
         required this.curso,
@@ -14,7 +14,7 @@ class Aluno {
 
   factory Aluno.fromJson(Map<String, dynamic> json) {
     return Aluno(
-        alunoId: json['id'],
+        id: json['id'],
         nome: json['nome'],
         ra: json['ra'],
         curso: json['curso'],
@@ -22,7 +22,7 @@ class Aluno {
   }
 
   @override
-  int get hashCode => alunoId.hashCode;
+  int get hashCode => id.hashCode;
 
   @override
   bool operator ==(Object other) {

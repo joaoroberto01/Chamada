@@ -91,7 +91,6 @@ class _ProfessorAulasScreenState extends State<ProfessorAulasScreen> {
                       final aula = _aulasFiltradas[index];
                       return Card(
                         child: ListTile(
-                          enabled: !aula.chamadaRealizada,
                           leading: const Icon(Icons.account_balance),
                           title: Text(aula.nome),
                           subtitle: Text("${aula.diaDaSemana.value} - ${aula.horario}"),
@@ -125,14 +124,14 @@ class _ProfessorAulasScreenState extends State<ProfessorAulasScreen> {
           actions: [
             OutlinedButton(
               child: const Text("Iniciar chamada"),
-              onPressed: () async {
+              onPressed: !aula.chamadaRealizada ? () async {
                 Navigator.of(context, rootNavigator: true).pop('dialog');
                 await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => ProfessorChamadaScreen(aula: aula)),
                 );
                 _getTeacherClasses();
-              },
+              } : null,
             ),
             OutlinedButton(
               child: const Text("Relatório de Presença"),

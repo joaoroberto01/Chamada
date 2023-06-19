@@ -46,7 +46,7 @@ class AlunoAulasScreenState extends State<AlunoAulasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Column(
-      children: [
+        children: [
         aulas.isNotEmpty
             ? Expanded(
                 child: ListView.builder(
@@ -66,8 +66,7 @@ class AlunoAulasScreenState extends State<AlunoAulasScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text("Professor: ${aula.professor}"),
-                              Text(
-                                  "${aula.diaDaSemana.value}, ${aula.horario}"),
+                              Text("${aula.diaDaSemana.value}, ${aula.horario}"),
                             ],
                           ),
                           onTap: () {
@@ -79,7 +78,7 @@ class AlunoAulasScreenState extends State<AlunoAulasScreen> {
                   },
                 ),
               )
-            : const Center(child: Text("Nenhuma aula para hoje"))
+            : const Expanded(child: Center(child: Text("Nenhuma aula para hoje")))
       ],
     ));
   }
@@ -140,10 +139,10 @@ class AlunoAulasScreenState extends State<AlunoAulasScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
-          children: [
-            const Icon(Icons.check_circle, color: Colors.green),
-            const SizedBox(width: 8),
-            const Text("Presença solicitada com sucesso."),
+          children: const [
+            Icon(Icons.check_circle, color: Colors.green),
+            SizedBox(width: 8),
+            Text("Presença solicitada com sucesso."),
           ],
         ),
         duration: const Duration(seconds: 3),

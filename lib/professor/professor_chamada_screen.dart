@@ -311,7 +311,7 @@ class _ProfessorChamadaScreenState extends State<ProfessorChamadaScreen> {
   ) {
     Aluno aluno = alunos[previousIndex];
 
-    final frequencia = Frequencia(aluno.alunoId, widget.aula.id, widget.aula.disciplinaId, FrequenciaStatus.PENDENTE);
+    final frequencia = Frequencia(aluno.id, widget.aula.id, widget.aula.disciplinaId, FrequenciaStatus.PENDENTE);
     if(direction == CardSwiperDirection.left){
       frequencia.status = FrequenciaStatus.AUSENTE;
     }else if(direction == CardSwiperDirection.right){

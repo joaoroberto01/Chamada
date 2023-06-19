@@ -19,14 +19,14 @@ class ListViewProfessor extends StatefulWidget {
 }
 
 class ListViewProfessorState extends State<ListViewProfessor> {
-  final List<Professor> _selectedProfessores = [];
-  Professor? selectedProfessor;// = Professor(id: '248da260-e335-43fd-8e5d-936be87f75dc', nome: 'x');
+  Professor? selectedProfessor;
 
   List<Professor> professores = [];
 
   @override
   void initState() {
     super.initState();
+    selectedProfessor = widget.disciplina.professor;
     // colher os dados do server
     _getProfessores();
   }
@@ -41,29 +41,14 @@ class ListViewProfessorState extends State<ListViewProfessor> {
 
   //
   Future<void> _enviarProfessoresSelecionados() async {
-    final List<String> selectedIds = _selectedProfessores.map((professor) => professor.id).toList();
-    final url = Uri.parse('${Environment.BASE_URL}/disciplinas/${widget.disciplina.id}/vincular-professor/${selectedIds.first}');
+    if (selectedProfessor == null) return;
+
+    final url = Uri.parse('${Environment.BASE_URL}/disciplinas/${widget.disciplina.id}/vincular-professor/${selectedProfessor?.id}');
     print(url);
-    final response = await http.put(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'aulaId': widget.disciplina.id, 'professores': selectedIds}),
-    );
+    final response = await http.put(url);
     if (response.statusCode == 200) {
       // sucesso ao enviar alunos selecionados
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Sucesso'),
-          content: const Text('Disciplina atualizada com sucesso!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+      _mostrarNotificacao(context);
     } else {
       // falha ao enviar alunos selecionados
       showDialog(
@@ -88,12 +73,6 @@ class ListViewProfessorState extends State<ListViewProfessor> {
       appBar: AppBar(
         title: const Text('Lista de Professores'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: _enviarProfessoresSelecionados,
-          ),
-        ],
       ),
       body: SafeArea(
         child: Column(
@@ -111,24 +90,20 @@ class ListViewProfessorState extends State<ListViewProfessor> {
             ),
             Expanded(
               child: professores.isEmpty
-                  ? const Center(
-                child: Text("Não existem professores nesta disciplina."),
-              )
+                  ? const Center(child: Text("Não existem professores nesta disciplina."))
                   : ListView.builder(
-                itemCount: professores.length,
-                itemBuilder: (context, index) {
+                  itemCount: professores.length,
+                  itemBuilder: (context, index) {
                   final professor = professores[index];
                   return RadioListTile<Professor>(
-                    title: Text('${professor.nome}'),
-                    value: professores[index], //_selectedProfessores.contains(professor), //TODO Respectivo prof
+                    title: Text(professor.nome),
+                    value: professores[index],
                     onChanged: (Professor? value) {
                       setState(() {
-                        //TODO SET SINGULAR
-                        // if (value != null && value) {
-                        //   _selectedProfessores.add(professor);
-                        // } else {
-                        //   _selectedProfessores.remove(professor);
-                        // }
+                        if (value != null) {
+                          selectedProfessor = value;
+                          _enviarProfessoresSelecionados();
+                        }
                       });
                     },
                     groupValue: selectedProfessor,
@@ -141,6 +116,21 @@ class ListViewProfessorState extends State<ListViewProfessor> {
         ),
       ),
 
+    );
+  }
+
+  void _mostrarNotificacao(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: const [
+            Icon(Icons.check_circle, color: Colors.green),
+            SizedBox(width: 8),
+            Text("Professor atualizado com sucesso."),
+          ],
+        ),
+        duration: const Duration(seconds: 3),
+      ),
     );
   }
 }

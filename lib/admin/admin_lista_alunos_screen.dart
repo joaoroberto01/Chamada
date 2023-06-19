@@ -19,7 +19,7 @@ class ListViewAlunos extends StatefulWidget {
 }
 
 class ListViewAlunosState extends State<ListViewAlunos> {
-  final List<Aluno> _selectedAlunos = [];
+  List<Aluno> _selectedAlunos = [];
 
   List<Aluno> alunos = [];
 
@@ -28,10 +28,10 @@ class ListViewAlunosState extends State<ListViewAlunos> {
     super.initState();
     // colher os dados do server
     _getStudents();
+    _getSelectedStudents();
   }
 
   Future<void> _getStudents() async {
-    // final response = await http.get(Uri.parse('${Environment.BASE_URL}/matriculas/disciplina/${widget.aula.disciplinaId}'));
     final response = await http.get(Uri.parse('${Environment.BASE_URL}/alunos'));
     final data = jsonDecode(utf8.decode(response.bodyBytes));
     setState(() {
@@ -39,8 +39,17 @@ class ListViewAlunosState extends State<ListViewAlunos> {
     });
   }
 
+  Future<void> _getSelectedStudents() async {
+    final response = await http.get(Uri.parse('${Environment.BASE_URL}/matriculas/${widget.disciplina.id}'));
+    final data = jsonDecode(utf8.decode(response.bodyBytes));
+
+    setState(() {
+      _selectedAlunos = List<Aluno>.from(data.map((json) => Aluno.fromJson(json)));
+    });
+  }
+
   Future<void> _enviarAlunosSelecionados() async {
-    final List<String> selectedIds = _selectedAlunos.map((aluno) => aluno.alunoId).toList();
+    final List<String> selectedIds = _selectedAlunos.map((aluno) => aluno.id).toList();
     final url = Uri.parse('${Environment.BASE_URL}/matriculas');
     final response = await http.post(
       url,
@@ -109,15 +118,13 @@ class ListViewAlunosState extends State<ListViewAlunos> {
             ),
             Expanded(
               child: alunos.isEmpty
-                  ? const Center(
-                child: Text("Não existem alunos nesta disciplina."),
-              )
+                  ? const Center(child: Text("Não existem alunos nesta disciplina."))
                 : ListView.builder(
                 itemCount: alunos.length,
                 itemBuilder: (context, index) {
                   final aluno = alunos[index];
                   return CheckboxListTile(
-                    title: Text('${aluno.nome}'),
+                    title: Text(aluno.nome),
                     subtitle: Text('RA: ${aluno.ra}'),
                     value: _selectedAlunos.contains(aluno),
                     onChanged: (bool? value) {

@@ -33,7 +33,7 @@ class AlunoCard extends StatelessWidget {
           Flexible(
             child: Container(
               child: Image.network(
-                "${Environment.BASE_URL}/alunos/${aluno.alunoId}/foto",
+                "${Environment.BASE_URL}/alunos/${aluno.id}/foto",
                 fit: BoxFit.cover,
                 height: double.infinity,
                 // When image is loading from the server it takes some time

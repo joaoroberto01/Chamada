@@ -192,9 +192,10 @@ class AdminDisciplinasScreenState extends State<AdminDisciplinasScreen> {
         return AlertDialog(
           title: Text(disciplina.nome),
           actions: [
-            ElevatedButton(
+            OutlinedButton(
               child: const Text("Gerenciar alunos"),
               onPressed: () {
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -203,9 +204,10 @@ class AdminDisciplinasScreenState extends State<AdminDisciplinasScreen> {
                 );
               },
             ),
-            ElevatedButton(
+            OutlinedButton(
               child: const Text("Gerenciar professor"),
               onPressed: () {
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
