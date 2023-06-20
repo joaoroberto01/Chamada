@@ -58,19 +58,8 @@ class ListViewAlunosState extends State<ListViewAlunos> {
     );
     if (response.statusCode == 200) {
       // sucesso ao enviar alunos selecionados
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Sucesso'),
-          content: const Text('Disciplina atualizada com sucesso!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+      _mostrarNotificacao(context);
+      Navigator.pop(context);
     } else {
       // falha ao enviar alunos selecionados
       showDialog(
@@ -145,6 +134,21 @@ class ListViewAlunosState extends State<ListViewAlunos> {
         ),
       ),
 
+    );
+  }
+
+  void _mostrarNotificacao(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: const [
+            Icon(Icons.check_circle, color: Colors.green),
+            SizedBox(width: 8),
+            Text("Alunos matriculados com sucesso."),
+          ],
+        ),
+        duration: const Duration(seconds: 3),
+      ),
     );
   }
 }

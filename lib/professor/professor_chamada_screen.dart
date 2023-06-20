@@ -281,17 +281,17 @@ class _ProfessorChamadaScreenState extends State<ProfessorChamadaScreen> {
                             child: const Icon(Icons.close),
                           ),
                           FloatingActionButton(
+                            heroTag: "undo",
+                            onPressed: frequencias.isNotEmpty ? controller.undo : null,
+                            elevation: 0,
+                            child: const Icon(Icons.undo),
+                          ),
+                          FloatingActionButton(
                             heroTag: "right",
                             onPressed: controller.swipeRight,
                             backgroundColor: Colors.green,
                             elevation: 0,
                             child: const Icon(Icons.done),
-                          ),
-                          FloatingActionButton(
-                            heroTag: "undo",
-                            onPressed: controller.undo,
-                            elevation: 0,
-                            child: const Icon(Icons.undo),
                           ),
                         ]
                       : []),
@@ -318,7 +318,10 @@ class _ProfessorChamadaScreenState extends State<ProfessorChamadaScreen> {
       frequencia.status = FrequenciaStatus.PRESENTE;
     }
 
-    frequencias.add(frequencia);
+    setState(() {
+      frequencias.add(frequencia);
+    });
+
     return true;
   }
 
@@ -327,9 +330,12 @@ class _ProfessorChamadaScreenState extends State<ProfessorChamadaScreen> {
     int currentIndex,
     CardSwiperDirection direction,
   ) {
-    debugPrint(
-      'The card $currentIndex was undod from the ${direction.name}',
-    );
+    if (frequencias.isEmpty) return false;
+
+    setState(() {
+      frequencias.removeLast();
+    });
+
     return true;
   }
 

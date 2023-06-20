@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AdminDisciplinasScreen extends StatefulWidget {
-
   AdminDisciplinasScreen({super.key});
 
   @override
@@ -27,14 +26,16 @@ class AdminDisciplinasScreenState extends State<AdminDisciplinasScreen> {
 
   Future<void> getClasses() async {
     final response =
-    await http.get(Uri.parse('${Environment.BASE_URL}/disciplinas'));
+        await http.get(Uri.parse('${Environment.BASE_URL}/disciplinas'));
     final data = jsonDecode(utf8.decode(response.bodyBytes));
     setState(() {
-      disciplinas = List<Disciplina>.from(data.map((x) => Disciplina.fromJson(x)));
+      disciplinas =
+          List<Disciplina>.from(data.map((x) => Disciplina.fromJson(x)));
     });
   }
 
-  final TextEditingController _novaDisciplinaController = TextEditingController();
+  final TextEditingController _novaDisciplinaController =
+      TextEditingController();
 
   void _adicionarDisciplina() async {
     String nomeDisciplina = _novaDisciplinaController.text;
@@ -43,35 +44,27 @@ class AdminDisciplinasScreenState extends State<AdminDisciplinasScreen> {
       'nome': nomeDisciplina,
     };
 
-    try {
-      final response = await http.post(
-        Uri.parse('${Environment.BASE_URL}/disciplinas'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(disciplinaData),
-      );
+    final response = await http.post(
+      Uri.parse('${Environment.BASE_URL}/disciplinas'),
+      headers: {'Content-Type': 'application/json',},
+      body: jsonEncode(disciplinaData),
+    );
 
-      if (response.statusCode == 200) {
-        print('disciplina criada');
-      } else {
-        print('erro ao criar disciplina');
-        return;
-      }
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
-      Disciplina novaDisciplina = Disciplina.fromJson(data);
-      setState(() {
-        disciplinas.add(novaDisciplina);
-      });
-      _mostrarNotificacao(context);
-    } catch (e) {
-      print(e);
+    if (response.statusCode == 200) {
+      print('disciplina criada');
+    } else {
+      return;
     }
+    final data = jsonDecode(utf8.decode(response.bodyBytes));
+    Disciplina novaDisciplina = Disciplina.fromJson(data);
+    setState(() {
+      disciplinas.add(novaDisciplina);
+    });
+    _mostrarNotificacao(context);
 
     // Fechar o modal
     Navigator.of(context).pop();
   }
-
 
   void _removerDisciplina(int index) async {
     final disciplinaRemovida = disciplinas[index];
@@ -80,7 +73,8 @@ class AdminDisciplinasScreenState extends State<AdminDisciplinasScreen> {
     try {
       // Enviar a solicitação DELETE para o servidor
       final response = await http.delete(
-        Uri.parse('${Environment.BASE_URL}/disciplinas/${disciplinaRemovida.id}'),
+        Uri.parse(
+            '${Environment.BASE_URL}/disciplinas/${disciplinaRemovida.id}'),
       );
 
       if (response.statusCode == 200) {
@@ -199,7 +193,8 @@ class AdminDisciplinasScreenState extends State<AdminDisciplinasScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ListViewAlunos(disciplina: disciplina),
+                    builder: (context) =>
+                        ListViewAlunos(disciplina: disciplina),
                   ),
                 );
               },
@@ -211,7 +206,8 @@ class AdminDisciplinasScreenState extends State<AdminDisciplinasScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ListViewProfessor(disciplina: disciplina),
+                    builder: (context) =>
+                        ListViewProfessor(disciplina: disciplina),
                   ),
                 );
               },
@@ -237,6 +233,3 @@ class AdminDisciplinasScreenState extends State<AdminDisciplinasScreen> {
     );
   }
 }
-
-
-
